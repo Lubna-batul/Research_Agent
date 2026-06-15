@@ -1,7 +1,6 @@
 from langchain.agents import create_tool_calling_agent, AgentExecutor
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -39,25 +38,31 @@ Always return valid JSON.
         ("placeholder","{agent_scratchpad}"),
     ]
 ).partial(format_instructions=parser.get_format_instructions())
-tools=[search_tool]
-agent=create_tool_calling_agent(
-llm=llm,
-prompt=prompt,
-tools=tools
-)
 
-agent_executor=AgentExecutor(
+def main():
+    
+    tools=[search_tool]
+    agent=create_tool_calling_agent(
+    llm=llm,
+    prompt=prompt,
+    tools=tools
+    )
+
+    agent_executor=AgentExecutor(
     agent=agent,
     tools=tools,
     verbose=True
-)
-query=input("What can i help you research? ")
-raw_response=agent_executor.invoke({"query": query})
+    )
+    query=input("What can i help you research? ")
+    raw_response=agent_executor.invoke({"query": query})
 
 
 
-try:
-    strucuted_response=parser.parse(raw_response["output"])
-    print(strucuted_response)
-except Exception as e:
-    print("Error parsing response", e, "Raw Response - ", raw_response)
+    try:
+        strucuted_response=parser.parse(raw_response["output"])
+        print(strucuted_response)
+    except Exception as e:
+        print("Error parsing response", e, "Raw Response - ", raw_response)
+
+if __name__=="__main__":
+    main()
