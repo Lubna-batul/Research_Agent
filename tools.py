@@ -4,7 +4,7 @@ from langchain_community.tools import WikipediaQueryRun
 from langchain_community.utilities import WikipediaAPIWrapper
 #duckdduckgo search
 search=DuckDuckGoSearchRun()
-
+ 
 search_tool=Tool(
     name="web_search",
     func=search.run,
